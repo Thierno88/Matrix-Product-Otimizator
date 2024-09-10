@@ -39,6 +39,16 @@ write_matrix_to_file (const char *filename, struct matrix *mat)
     return 1;
 }
 
+int
+check_errors(struct matrix *matrix, float scalar_value) {
+    for(int i = 0; i < matrix.height * matrix.width; i++){
+        if(matrix[i] != scalar_value){
+            printf("Erro na matrix")
+            return 0;
+        } 
+    }
+    return 1;
+}
 
 
 
@@ -167,7 +177,9 @@ main (int argc, char *argv[])
     }
 
     gettimeofday (&stop, NULL);
-    printf ("Tempo de Execucao: %f ms\n", timedifference_msec (start, stop));
+
+    float time_elapsed_execution = timedifference_msec (start, stop);
+    printf ("Tempo de Execucao: %f ms\n", time_elapsed_execution);
 
     // Escrevendo o resultado da multiplicação matriz-matriz em um arquivo binário
     if (!write_matrix_to_file (fileD, &matrixC))
@@ -210,6 +222,8 @@ main (int argc, char *argv[])
 
             matrixC.rows[9 * matrixC.width + 9]);
 
+    printf("-------------------------------\n");
+    printf("Tempo execução total: %f ms\n", time_elapsed_execution);
 
     // Liberando memória
     free(matrixA.rows);
