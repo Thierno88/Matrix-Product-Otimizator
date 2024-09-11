@@ -3,8 +3,8 @@
 
 int main() {
     // Definindo o tamanho da matriz (8x8 neste exemplo)
-    int linhas = 1024;
-    int colunas = 1024;
+    int linhas = 2048;
+    int colunas = 2048;
 
     // Alocando dinamicamente uma matriz de tamanho múltiplo de 8
     float **matriz = (float **)malloc(linhas * sizeof(float *));

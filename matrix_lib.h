@@ -15,7 +15,7 @@ struct matrix {
 int scalar_matrix_mult(float scalar_value, struct matrix *matrix);
 
 //Multiplica duas matrizes A e B e armazena o resultado na matriz C.
-int matrix_matrix_mult_otimizado(struct matrix *matrixA, struct matrix *matrixB, struct matrix *matrixC);
+int matrix_matrix_mult(struct matrix *matrixA, struct matrix *matrixB, struct matrix *matrixC);
 
 //Imprime uma Matriz
 void imprime_matriz(struct matrix matrix);

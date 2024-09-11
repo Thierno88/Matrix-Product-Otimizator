@@ -41,12 +41,15 @@ write_matrix_to_file (const char *filename, struct matrix *mat)
 
 int
 check_errors(struct matrix *matrix, float scalar_value) {
-    for(int i = 0; i < matrix.height * matrix.width; i++){
-        if(matrix[i] != scalar_value){
-            printf("Erro na matrix")
+    printf("Veficando erros...\n");
+    float expected = scalar_value * matrix->rows[0];
+    for(int i = 0; i < matrix->height * matrix->width; i++){
+        if(matrix->rows[i] - expected > 0.0001){
+            printf("Erro na matrix");
             return 0;
         } 
     }
+    printf("Tudo certo!\n");
     return 1;
 }
 
@@ -96,6 +99,10 @@ main (int argc, char *argv[])
     const char *fileB = argv[7];	// Segundo arquivo binário para matriz B
     const char *fileC = argv[8];	// Terceiro arquivo binário para matriz resultado de multiplicação escalar
     const char *fileD = argv[9];	// Quarto arquivo binário para matriz resultado da multiplicação matriz-matriz
+
+
+    float elapsed_scalar_mult, elapsed_matrix_mult;
+
 
     // Alocando as matrizes
     matrixA.height = heightA;
@@ -152,7 +159,11 @@ main (int argc, char *argv[])
         return 1;
     }
     gettimeofday (&stop, NULL);
-    printf ("Tempo de execucao: %f ms\n", timedifference_msec (start, stop));
+
+    elapsed_scalar_mult = timedifference_msec (start, stop);
+
+    printf ("Tempo de execucao: %f ms\n", elapsed_scalar_mult);
+
     printf("\n");
 
     printf("Imprimindo matrix A:\n");
@@ -169,7 +180,9 @@ main (int argc, char *argv[])
     }
 
     printf ("Multiplicação de matrizes\n");
+
     gettimeofday (&start, NULL);
+
     if (!matrix_matrix_mult (&matrixA, &matrixB, &matrixC))
     {
         printf ("%s: matrix_matrix_mult problem.", argv[0]);
@@ -178,8 +191,8 @@ main (int argc, char *argv[])
 
     gettimeofday (&stop, NULL);
 
-    float time_elapsed_execution = timedifference_msec (start, stop);
-    printf ("Tempo de Execucao: %f ms\n", time_elapsed_execution);
+    elapsed_matrix_mult = timedifference_msec (start, stop);
+    printf ("Tempo de Execucao: %f ms\n", elapsed_matrix_mult);
 
     // Escrevendo o resultado da multiplicação matriz-matriz em um arquivo binário
     if (!write_matrix_to_file (fileD, &matrixC))
@@ -208,28 +221,21 @@ main (int argc, char *argv[])
     printf("-------------------------------\n");
 
 
-    printf ("Elemento na posição (10, 10) da matriz A: %.2f\n",
-
-            matrixA.rows[9 * matrixA.width + 9]);
-
-
-    printf ("Elemento na posição (10, 10) da matriz B: %.2f\n",
-
-            matrixB.rows[9 * matrixB.width + 9]);
-
-
-    printf ("Elemento na posição (10, 10) da matriz C: %.2f\n",
-
-            matrixC.rows[9 * matrixC.width + 9]);
+    check_errors(&matrixA, scalar*matrixA.rows[0]);
 
     printf("-------------------------------\n");
-    printf("Tempo execução total: %f ms\n", time_elapsed_execution);
+    printf("Tempo execução escalar: %f ms\n", elapsed_scalar_mult);
+    printf("Tempo execução matriz: %f ms\n", elapsed_matrix_mult);
 
     // Liberando memória
     free(matrixA.rows);
     free(matrixB.rows);
     free(matrixC.rows);
 
+    gettimeofday (&overall_t2, NULL);
+    
+    float overall_time = timedifference_msec (overall_t1, overall_t2);
+    printf ("Tempo total de execução: %f ms\n", overall_time);
     return 0;
 
 }
